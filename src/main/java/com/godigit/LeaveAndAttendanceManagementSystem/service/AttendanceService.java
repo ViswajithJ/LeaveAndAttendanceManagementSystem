@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.godigit.LeaveAndAttendanceManagementSystem.dto.AttendanceStatusDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.exception.ResourceNotFoundException;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.Attendance;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
@@ -53,6 +54,18 @@ public class AttendanceService {
 
         return attendanceRepository.findByUser(user);
     }
+
+    public AttendanceStatusDTO getAttendanceStatus(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        boolean isPunchedIn = attendanceRepository.findByUserAndPunchOutTimeIsNull(user).isPresent();
+
+        String status = isPunchedIn ? "PUNCHED IN" : "PUNCHED OUT";
+
+        return new AttendanceStatusDTO(user.getId(), status);
+    }
+
 
     // for managers/admin
     public List<Attendance> getAllAttendance() {
