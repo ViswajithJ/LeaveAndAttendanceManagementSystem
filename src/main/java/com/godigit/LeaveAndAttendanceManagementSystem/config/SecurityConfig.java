@@ -1,18 +1,40 @@
-package com.godigit.LeaveAndAttendanceManagementSystem.config;
+// package com.godigit.LeaveAndAttendanceManagementSystem.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+// import org.springframework.context.annotation.Bean;
+// import org.springframework.context.annotation.Configuration;
+// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+// import org.springframework.security.web.SecurityFilterChain;
 
-import lombok.RequiredArgsConstructor;
+// @Configuration
+// public class SecurityConfig {
+    
+//     @Bean
+//     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//         http
+//         .csrf(csrf -> csrf.disable()) // disable CSRF for APIs (important for POST endpoints)
+//         .authorizeHttpRequests(auth -> auth
+//             // Public endpoints (if you want some open APIs, like signup/login)
+//             .requestMatchers("/auth/**").permitAll()
 
-@Configuration
-@RequiredArgsConstructor
-public class SecurityConfig {
+//             // Employee level
+//             .requestMatchers("/punchin", "/punchout", "/applyleave", "/leaves/mine", "/attendance/mine")
+//                 .hasAnyRole("EMPLOYEE", "MANAGER", "ADMIN")
 
-    // @Bean
-    // public PasswordEncoder passwordEncoder() {
-    //     return new BCryptPasswordEncoder();
-    // }
-}
+//             // Manager level
+//             .requestMatchers("/leaves/team", "/approveleave/**", "/rejectleave/**", "/attendance/team")
+//                 .hasAnyRole("MANAGER", "ADMIN")
+
+//             // Admin level
+//             .requestMatchers("/users/**", "/attendance/all", "/leaves/all")
+//                 .hasRole("ADMIN")
+
+//             // everything else must be authenticated
+//             .anyRequest().authenticated()
+//         )
+//         // form-based login (Spring default login page)
+//         .formLogin(login -> login.permitAll())
+//         .logout(logout -> logout.permitAll());
+
+//         return http.build();
+//     }
+// }
