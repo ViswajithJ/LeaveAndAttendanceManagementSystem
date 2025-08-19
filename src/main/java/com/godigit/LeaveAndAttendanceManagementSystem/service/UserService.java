@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.UserCreateDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.UserDTO;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveBalance;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
+import com.godigit.LeaveAndAttendanceManagementSystem.repository.LeaveBalanceRepository;
 import com.godigit.LeaveAndAttendanceManagementSystem.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +19,8 @@ import lombok.AllArgsConstructor;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final LeaveBalanceRepository leaveBalanceRepository; 
+
     // private final PasswordEncoder passwordEncoder;
 
     public UserDTO createUser(UserCreateDTO dto) {
@@ -28,6 +32,13 @@ public class UserService {
         user.setRole(dto.getRole());
 
         User saved = userRepository.save(user);
+        // Initialize leave balance for the new user
+        LeaveBalance balance = new LeaveBalance();
+        balance.setUser(saved);
+        balance.setTotalLeaves(20); // default allocation, can be customized
+        balance.setLeavesTaken(0);
+
+        leaveBalanceRepository.save(balance);
         return mapToDTO(saved);
     }
 
