@@ -3,6 +3,7 @@ package com.godigit.LeaveAndAttendanceManagementSystem.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,16 +25,19 @@ public class AttendanceController {
     private final AttendanceService attendanceService;
 
     @PostMapping("/punchin/{userId}")
+    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
     public AttendanceResponseDTO punchIn(@PathVariable Long userId) {
         return mapToDto(attendanceService.punchIn(userId));
     }
 
     @PostMapping("/punchout/{userId}")
+    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
     public AttendanceResponseDTO punchOut(@PathVariable Long userId) {
         return mapToDto(attendanceService.punchOut(userId));
     }
 
     @GetMapping("/mylogs/{userId}")
+    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
     public List<AttendanceResponseDTO> getMyLogs(@PathVariable Long userId) {
         return attendanceService.getMyAttendance(userId)
                 .stream()
@@ -42,12 +46,14 @@ public class AttendanceController {
     }
 
     @GetMapping("/status/{userId}")
+    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
     public AttendanceStatusDTO getAttendanceStatus(@PathVariable Long userId) {
         return attendanceService.getAttendanceStatus(userId);
 }
 
     // for managers/admins later
     @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public List<AttendanceResponseDTO> getAllLogs() {
         return attendanceService.getAllAttendance()
                 .stream()

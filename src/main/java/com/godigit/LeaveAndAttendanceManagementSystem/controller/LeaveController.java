@@ -6,6 +6,8 @@ import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveBalanceDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.LeaveService;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,42 +21,50 @@ public class LeaveController {
 
     // Apply leave
     @PostMapping("/apply")
+    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+
     public LeaveResponseDTO applyLeave(@RequestBody LeaveRequestDTO dto) {
         return leaveService.applyLeave(dto);
     }
 
     // Approve leave
     @PutMapping("/{id}/approve")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public LeaveResponseDTO approveLeave(@PathVariable Long id) {
         return leaveService.approveLeave(id);
     }
 
     // Reject leave
     @PutMapping("/{id}/reject")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public LeaveResponseDTO rejectLeave(@PathVariable Long id) {
         return leaveService.rejectLeave(id);
     }
 
     // Get leaves of specific employee
     @GetMapping("/employee/{userId}")
+    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
     public List<LeaveResponseDTO> getLeavesByEmployee(@PathVariable Long userId) {
         return leaveService.getLeavesByEmployee(userId);
     }
 
     // Get pending leaves
     @GetMapping("/pending")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public List<LeaveResponseDTO> getPendingLeaves() {
         return leaveService.getPendingLeaves();
     }
 
     // Get all leaves
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<LeaveResponseDTO> getAllLeaves() {
         return leaveService.getAllLeaves();
     }
 
     // Get leave balance
     @GetMapping("/{userId}/balance")
+    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
     public LeaveBalanceDTO getLeaveBalance(@PathVariable Long userId) {
         return leaveService.getLeaveBalance(userId);
     }
