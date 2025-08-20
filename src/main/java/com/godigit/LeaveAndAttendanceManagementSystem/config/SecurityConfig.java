@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.godigit.LeaveAndAttendanceManagementSystem.service.CustomUserDetailsService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -62,9 +63,27 @@ public class SecurityConfig {
             .headers(headers -> headers
                     .frameOptions(frame -> frame.disable())
             )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-            );
+            // .sessionManagement(session -> session
+            //     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            // );
+            .formLogin(form -> form
+            .loginProcessingUrl("/api/auth/login") // POST request goes here
+            .usernameParameter("email")     // 👈 tells Spring to look for "email"
+            .passwordParameter("password")
+            .successHandler((request, response, authentication) -> {
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"message\":\"Login successful\"}");
+            })
+            .failureHandler((request, response, exception) -> {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\":\"Invalid username or password\"}");
+            })
+            .permitAll()
+        )
+
+            .logout(logout -> logout.permitAll());
         return http.build();
     }
 
