@@ -27,7 +27,7 @@ public class UserController {
     }
 
     // Only ADMIN can create new users
-    // @PreAuthorize("hasRole('ADMIN')") uncomment later after proper security
+    @PreAuthorize("hasRole('ADMIN')") //uncomment later after proper security
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserCreateDTO dto) {
         return ResponseEntity.ok(userService.createUser(dto));
