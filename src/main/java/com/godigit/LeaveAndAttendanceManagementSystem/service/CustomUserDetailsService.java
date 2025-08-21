@@ -7,3 +7,4 @@ public interface CustomUserDetailsService extends UserDetailsService {
 
     public UserDetails loadUserByUsername(String email);
 }
+

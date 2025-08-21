@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.godigit.LeaveAndAttendanceManagementSystem.config.CustomUserDetails;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveBalanceDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveRequestDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveResponseDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.Impl.LeaveServiceImpl;
-
+import org.springframework.security.core.Authentication;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -33,17 +34,33 @@ public class LeaveController {
     }
 
     // Approve leave
+    // @PutMapping("/{id}/approve")
+    // @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    // public LeaveResponseDTO approveLeave(@PathVariable Long id) {
+    //     return leaveService.approveLeave(id);
+    // }
+
     @PutMapping("/{id}/approve")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    public LeaveResponseDTO approveLeave(@PathVariable Long id) {
-        return leaveService.approveLeave(id);
-    }
+@PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+public LeaveResponseDTO approveLeave(@PathVariable Long id, Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    Long approverId = userDetails.getId();
+    boolean isAdmin = userDetails.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+    return leaveService.approveLeave(id, approverId, isAdmin);
+}
+
 
     // Reject leave
     @PutMapping("/{id}/reject")
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    public LeaveResponseDTO rejectLeave(@PathVariable Long id) {
-        return leaveService.rejectLeave(id);
+    public LeaveResponseDTO rejectLeave(@PathVariable Long id, Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    Long approverId = userDetails.getId();
+    boolean isAdmin = userDetails.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        return leaveService.rejectLeave(id,approverId, isAdmin);
     }
 
     // Get leaves of specific employee

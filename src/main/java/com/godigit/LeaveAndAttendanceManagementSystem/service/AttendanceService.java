@@ -15,4 +15,6 @@ public interface AttendanceService {
     AttendanceStatusDTO getAttendanceStatus(Long userId);
 
     List<Attendance> getAllAttendance();
+    
+    List<Attendance> getTeamAttendance(Long managerId);
 }

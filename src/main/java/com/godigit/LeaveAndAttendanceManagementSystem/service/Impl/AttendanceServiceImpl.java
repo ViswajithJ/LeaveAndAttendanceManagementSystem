@@ -72,4 +72,9 @@ public class AttendanceServiceImpl implements AttendanceService {
     public List<Attendance> getAllAttendance() {
         return attendanceRepository.findAll();
     }
+    //for manager
+    public List<Attendance> getTeamAttendance(Long managerId) {
+        return attendanceRepository.findByManagerId(managerId);
+    }
+
 }

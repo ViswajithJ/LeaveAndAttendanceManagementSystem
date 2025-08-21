@@ -22,4 +22,6 @@ public class UserCreateDTO {
     private String password;
 
     private Role role;
+     
+    private Long managerId;
 }

@@ -24,12 +24,19 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserDTO createUser(UserCreateDTO dto) {
+        User manager = null;
+         if (dto.getManagerId() != null) {
+        manager = userRepository.findById(dto.getManagerId())
+                .orElseThrow(() -> new RuntimeException("Manager not found"));
+    }
+
         User user = new User();
         user.setFullName(dto.getFullName());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         // user.setPassword(dto.getPassword());
         user.setRole(dto.getRole());
+        user.setManager(manager);
 
         User saved = userRepository.save(user);
         // Initialize leave balance for the new user
@@ -60,6 +67,7 @@ public class UserServiceImpl implements UserService {
         dto.setFullName(user.getFullName());
         dto.setEmail(user.getEmail());
         dto.setRole(user.getRole());
+        dto.setManager_id(user.getManager() != null ? user.getManager().getId() : null);
         return dto;
     }
 }

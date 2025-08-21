@@ -63,11 +63,17 @@ public class LeaveServiceImpl implements LeaveService {
         return mapToResponseDTO(leaveRepo.save(leave));
     }
 
-    public LeaveResponseDTO approveLeave(Long leaveId) {
+    public LeaveResponseDTO approveLeave(Long leaveId, Long approverId, boolean isAdmin) {
         LeaveApplication leave = getLeaveOrThrow(leaveId);
         if (leave.getStatus() != LeaveStatus.PENDING)
             throw new IllegalStateException("Only PENDING leaves can be approved");
-
+    if (!isAdmin) {
+        // Manager approval check
+        Long employeeManagerId = leave.getUser().getManager().getId(); // employee’s manager
+        if (!employeeManagerId.equals(approverId)) {
+            throw new RuntimeException("You are not authorized to approve this leave");
+        }
+    }
         leave.setStatus(LeaveStatus.APPROVED);
         LeaveApplication saved = leaveRepo.save(leave);
 
@@ -81,11 +87,17 @@ public class LeaveServiceImpl implements LeaveService {
         return mapToResponseDTO(saved);
     }
 
-    public LeaveResponseDTO rejectLeave(Long leaveId) {
+    public LeaveResponseDTO rejectLeave(Long leaveId,Long approverId, boolean isAdmin) {
         LeaveApplication leave = getLeaveOrThrow(leaveId);
         if (leave.getStatus() != LeaveStatus.PENDING)
             throw new IllegalStateException("Only PENDING leaves can be rejected");
-
+        if (!isAdmin) {
+        // Manager approval check
+        Long employeeManagerId = leave.getUser().getManager().getId(); // employee’s manager
+        if (!employeeManagerId.equals(approverId)) {
+            throw new RuntimeException("You are not authorized to approve this leave");
+        }
+    }
         leave.setStatus(LeaveStatus.REJECTED);
         return mapToResponseDTO(leaveRepo.save(leave));
     }
