@@ -3,7 +3,7 @@ package com.godigit.LeaveAndAttendanceManagementSystem.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
-import com.godigit.LeaveAndAttendanceManagementSystem.enums.LeaveStatus;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.LeaveStatus;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -2,7 +2,7 @@ package com.godigit.LeaveAndAttendanceManagementSystem.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveApplication;
-import com.godigit.LeaveAndAttendanceManagementSystem.enums.LeaveStatus;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.LeaveStatus;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
 
 import java.time.LocalDate;

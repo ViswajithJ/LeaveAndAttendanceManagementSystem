@@ -1,6 +1,6 @@
 package com.godigit.LeaveAndAttendanceManagementSystem.model;
 
-import com.godigit.LeaveAndAttendanceManagementSystem.enums.Role;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
