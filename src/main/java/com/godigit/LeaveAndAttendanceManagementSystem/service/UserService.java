@@ -20,15 +20,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final LeaveBalanceRepository leaveBalanceRepository; 
-
-    // private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public UserDTO createUser(UserCreateDTO dto) {
         User user = new User();
         user.setFullName(dto.getFullName());
         user.setEmail(dto.getEmail());
-        // user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setPassword(dto.getPassword());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        // user.setPassword(dto.getPassword());
         user.setRole(dto.getRole());
 
         User saved = userRepository.save(user);
