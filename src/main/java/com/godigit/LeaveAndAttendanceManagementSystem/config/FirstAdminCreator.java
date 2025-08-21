@@ -4,7 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.godigit.LeaveAndAttendanceManagementSystem.enums.Role;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.Role;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveBalance;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
 import com.godigit.LeaveAndAttendanceManagementSystem.repository.LeaveBalanceRepository;

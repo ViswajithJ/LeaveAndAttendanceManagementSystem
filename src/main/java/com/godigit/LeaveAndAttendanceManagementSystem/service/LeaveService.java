@@ -1,7 +1,6 @@
 package com.godigit.LeaveAndAttendanceManagementSystem.service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveBalanceDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveRequestDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveResponseDTO;
-import com.godigit.LeaveAndAttendanceManagementSystem.enums.LeaveStatus;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.LeaveStatus;
 import com.godigit.LeaveAndAttendanceManagementSystem.exception.ResourceNotFoundException;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveApplication;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveBalance;

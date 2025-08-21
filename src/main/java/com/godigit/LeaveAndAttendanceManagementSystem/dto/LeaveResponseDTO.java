@@ -2,7 +2,7 @@ package com.godigit.LeaveAndAttendanceManagementSystem.dto;
 
 import java.time.LocalDate;
 
-import com.godigit.LeaveAndAttendanceManagementSystem.enums.LeaveStatus;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.LeaveStatus;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.godigit.LeaveAndAttendanceManagementSystem.dto;
 
-import com.godigit.LeaveAndAttendanceManagementSystem.enums.Role;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

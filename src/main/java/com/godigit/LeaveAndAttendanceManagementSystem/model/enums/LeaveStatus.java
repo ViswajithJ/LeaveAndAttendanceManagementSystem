@@ -1,4 +1,4 @@
-package com.godigit.LeaveAndAttendanceManagementSystem.enums;
+package com.godigit.LeaveAndAttendanceManagementSystem.model.enums;
 
 public enum LeaveStatus {
     PENDING,
