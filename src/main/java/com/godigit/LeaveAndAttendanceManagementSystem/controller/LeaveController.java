@@ -3,6 +3,8 @@ package com.godigit.LeaveAndAttendanceManagementSystem.controller;
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +17,10 @@ import com.godigit.LeaveAndAttendanceManagementSystem.config.CustomUserDetails;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveBalanceDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveRequestDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveResponseDTO;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.Role;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.Impl.LeaveServiceImpl;
-import org.springframework.security.core.Authentication;
+import com.godigit.LeaveAndAttendanceManagementSystem.util.PermissionUtil;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class LeaveController {
 
     private final LeaveServiceImpl leaveService;
+    private final PermissionUtil permissionUtil;
 
     // Apply leave
     @PostMapping("/apply")
@@ -37,30 +42,29 @@ public class LeaveController {
     // @PutMapping("/{id}/approve")
     // @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     // public LeaveResponseDTO approveLeave(@PathVariable Long id) {
-    //     return leaveService.approveLeave(id);
+    // return leaveService.approveLeave(id);
     // }
 
     @PutMapping("/{id}/approve")
-@PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-public LeaveResponseDTO approveLeave(@PathVariable Long id, Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    Long approverId = userDetails.getId();
-    boolean isAdmin = userDetails.getAuthorities().stream()
-            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    public LeaveResponseDTO approveLeave(@PathVariable Long id, Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long approverId = userDetails.getId();
+        boolean isAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-    return leaveService.approveLeave(id, approverId, isAdmin);
-}
-
+        return leaveService.approveLeave(id, approverId, isAdmin);
+    }
 
     // Reject leave
     @PutMapping("/{id}/reject")
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public LeaveResponseDTO rejectLeave(@PathVariable Long id, Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    Long approverId = userDetails.getId();
-    boolean isAdmin = userDetails.getAuthorities().stream()
-            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-        return leaveService.rejectLeave(id,approverId, isAdmin);
+        Long approverId = userDetails.getId();
+        boolean isAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        return leaveService.rejectLeave(id, approverId, isAdmin);
     }
 
     // Get leaves of specific employee
@@ -87,9 +91,15 @@ public LeaveResponseDTO approveLeave(@PathVariable Long id, Authentication authe
 
     // Get leave balance
     @GetMapping("/{userId}/balance")
-    // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
-    @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
-    public LeaveBalanceDTO getLeaveBalance(@PathVariable Long userId) {
+    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    // @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
+    public LeaveBalanceDTO getLeaveBalance(@PathVariable Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long loggedInUserId = userDetails.getId();
+        Role role = userDetails.getRole(); // assuming you expose role in CustomUserDetails
+
+        permissionUtil.checkViewPermission(loggedInUserId, role, userId);
+
         return leaveService.getLeaveBalance(userId);
     }
 }

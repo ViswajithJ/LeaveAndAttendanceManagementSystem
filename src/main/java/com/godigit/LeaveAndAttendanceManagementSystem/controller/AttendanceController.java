@@ -19,6 +19,7 @@ import com.godigit.LeaveAndAttendanceManagementSystem.model.Attendance;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.Role;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.Impl.AttendanceServiceImpl;
+import com.godigit.LeaveAndAttendanceManagementSystem.util.PermissionUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class AttendanceController {
 
     private final AttendanceServiceImpl attendanceService;
+    private final PermissionUtil permissionUtil;
 
     @PostMapping("/punchin")
     // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
@@ -65,7 +67,7 @@ public class AttendanceController {
         Long loggedInUserId = userDetails.getId();
         Role role = userDetails.getRole(); // assuming you expose role in CustomUserDetails
 
-        attendanceService.checkViewPermission(loggedInUserId, role, userId);
+        permissionUtil.checkViewPermission(loggedInUserId, role, userId);
 
         return attendanceService.getMyAttendance(userId)
                 .stream()
@@ -82,14 +84,14 @@ public class AttendanceController {
         Long loggedInUserId = userDetails.getId();
         Role role = userDetails.getRole(); // assuming you expose role in CustomUserDetails
 
-        attendanceService.checkViewPermission(loggedInUserId, role, userId);
+        permissionUtil.checkViewPermission(loggedInUserId, role, userId);
 
         return attendanceService.getAttendanceStatus(userId);
     }
 
     // for managers/admins later
     @GetMapping("/all")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public List<AttendanceResponseDTO> getAllLogs() {
         return attendanceService.getAllAttendance()
                 .stream()
