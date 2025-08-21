@@ -86,8 +86,4 @@ public class SecurityConfig {
             .logout(logout -> logout.permitAll());
         return http.build();
     }
-
-    
-    
-
 }

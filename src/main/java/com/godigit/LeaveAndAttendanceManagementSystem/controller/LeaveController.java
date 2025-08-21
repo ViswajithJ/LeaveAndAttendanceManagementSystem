@@ -22,7 +22,6 @@ public class LeaveController {
     // Apply leave
     @PostMapping("/apply")
     @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
-
     public LeaveResponseDTO applyLeave(@RequestBody LeaveRequestDTO dto) {
         return leaveService.applyLeave(dto);
     }
@@ -43,7 +42,8 @@ public class LeaveController {
 
     // Get leaves of specific employee
     @GetMapping("/employee/{userId}")
-    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public List<LeaveResponseDTO> getLeavesByEmployee(@PathVariable Long userId) {
         return leaveService.getLeavesByEmployee(userId);
     }
@@ -64,7 +64,8 @@ public class LeaveController {
 
     // Get leave balance
     @GetMapping("/{userId}/balance")
-    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public LeaveBalanceDTO getLeaveBalance(@PathVariable Long userId) {
         return leaveService.getLeaveBalance(userId);
     }
