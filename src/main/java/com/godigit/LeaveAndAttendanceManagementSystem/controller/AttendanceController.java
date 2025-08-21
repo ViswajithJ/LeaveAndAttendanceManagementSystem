@@ -25,19 +25,22 @@ public class AttendanceController {
     private final AttendanceService attendanceService;
 
     @PostMapping("/punchin/{userId}")
-    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public AttendanceResponseDTO punchIn(@PathVariable Long userId) {
         return mapToDto(attendanceService.punchIn(userId));
     }
 
     @PostMapping("/punchout/{userId}")
-    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public AttendanceResponseDTO punchOut(@PathVariable Long userId) {
         return mapToDto(attendanceService.punchOut(userId));
     }
 
     @GetMapping("/mylogs/{userId}")
-    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public List<AttendanceResponseDTO> getMyLogs(@PathVariable Long userId) {
         return attendanceService.getMyAttendance(userId)
                 .stream()
@@ -46,7 +49,8 @@ public class AttendanceController {
     }
 
     @GetMapping("/status/{userId}")
-    @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
+    @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public AttendanceStatusDTO getAttendanceStatus(@PathVariable Long userId) {
         return attendanceService.getAttendanceStatus(userId);
 }
