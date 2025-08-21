@@ -58,7 +58,7 @@ public class SecurityConfig {
             // );
             .formLogin(form -> form
             .loginProcessingUrl("/api/auth/login") // POST request goes here
-            .usernameParameter("email")     // 👈 tells Spring to look for "email"
+            .usernameParameter("email")     //  tells Spring to look for "email"
             .passwordParameter("password")
             .successHandler((request, response, authentication) -> {
                 response.setStatus(HttpServletResponse.SC_OK);

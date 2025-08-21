@@ -13,7 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.AttendanceResponseDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.AttendanceStatusDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.Attendance;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
+import com.godigit.LeaveAndAttendanceManagementSystem.config.CustomUserDetails;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.Impl.AttendanceServiceImpl;
+
+import org.springframework.security.core.Authentication;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -64,6 +69,18 @@ public class AttendanceController {
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
+
+@GetMapping("/team")
+@PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+public List<AttendanceResponseDTO> getTeamLogs(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    User manager = userDetails.getUser(); // ✅ now you have full entity
+    return attendanceService.getTeamAttendance(manager.getId())
+            .stream()
+            .map(this::mapToDto)
+            .collect(Collectors.toList());
+}
+
 
     // === DTO mapping kept here itself ===
     private AttendanceResponseDTO mapToDto(Attendance attendance) {

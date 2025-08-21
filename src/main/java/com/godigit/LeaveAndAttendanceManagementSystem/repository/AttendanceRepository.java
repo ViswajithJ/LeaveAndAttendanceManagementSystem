@@ -1,6 +1,9 @@
 package com.godigit.LeaveAndAttendanceManagementSystem.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import com.godigit.LeaveAndAttendanceManagementSystem.model.Attendance;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
 
@@ -11,4 +14,12 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     List<Attendance> findByUser(User user);
 
     Optional<Attendance> findByUserAndPunchOutTimeIsNull(User user);
+    
+    // @Query("SELECT a FROM Attendance a WHERE a.employee.team.manager.id = :managerId")
+    // List<Attendance> findTeamAttendance(Long managerId);
+
+    // @Query("SELECT a FROM Attendance a WHERE a.user.manager.id = :managerId")
+    // List<Attendance> findByManagerId(Long managerId);
+     @Query("SELECT a FROM Attendance a WHERE a.user.manager.id = :managerId")
+    List<Attendance> findByManagerId(@Param("managerId") Long managerId);
 }

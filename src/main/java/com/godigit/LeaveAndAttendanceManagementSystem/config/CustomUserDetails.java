@@ -15,6 +15,11 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
+    // 🔹 Expose your User entity when needed
+    public User getUser() {
+        return user;
+    }
+    
     public Long getId() {
         return user.getId(); // expose user ID
     }
