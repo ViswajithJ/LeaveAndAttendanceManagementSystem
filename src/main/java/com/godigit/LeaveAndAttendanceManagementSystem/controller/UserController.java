@@ -22,19 +22,19 @@ import jakarta.validation.Valid;
 public class UserController {
 
     private final UserService userService;
-    private PasswordEncoder passwordEncoder;
+    // private PasswordEncoder passwordEncoder;
 
 
     public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
+        // this.passwordEncoder = passwordEncoder;
     }
 
     // Only ADMIN can create new users
     @PreAuthorize("hasRole('ADMIN')") //uncomment later after proper security
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserCreateDTO dto) {
-        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+        // dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         return ResponseEntity.ok(userService.createUser(dto));
     }
 
