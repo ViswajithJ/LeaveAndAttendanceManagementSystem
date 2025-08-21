@@ -9,9 +9,9 @@ import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveApplication;
 public interface LeaveService {
     LeaveResponseDTO applyLeave(LeaveRequestDTO dto);
 
-    LeaveResponseDTO approveLeave(Long leaveId);
+    LeaveResponseDTO approveLeave(Long leaveId, Long approverId, boolean isAdmin);
 
-    LeaveResponseDTO rejectLeave(Long leaveId);
+    LeaveResponseDTO rejectLeave(Long leaveId,Long approverId, boolean isAdmin);
 
     List<LeaveResponseDTO> getLeavesByEmployee(Long userId);
 
