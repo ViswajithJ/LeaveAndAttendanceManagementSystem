@@ -1,6 +1,9 @@
 package com.godigit.LeaveAndAttendanceManagementSystem.service;
 
 import java.util.List;
+
+import org.springframework.security.core.Authentication;
+
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveBalanceDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveRequestDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveResponseDTO;
@@ -24,4 +27,5 @@ public interface LeaveService {
     LeaveApplication getLeaveOrThrow(Long leaveId);
 
     LeaveResponseDTO mapToResponseDTO(LeaveApplication leave);
+    LeaveApplication revokeLeave(Long leaveId, Authentication authentication);
 }

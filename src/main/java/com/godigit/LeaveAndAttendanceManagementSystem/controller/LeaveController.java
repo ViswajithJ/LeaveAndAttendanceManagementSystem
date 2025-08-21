@@ -2,6 +2,7 @@ package com.godigit.LeaveAndAttendanceManagementSystem.controller;
 
 import java.util.List;
 
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +21,7 @@ import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveResponseDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.Role;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.Impl.LeaveServiceImpl;
 import com.godigit.LeaveAndAttendanceManagementSystem.util.PermissionUtil;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveApplication;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,6 +46,13 @@ public class LeaveController {
     // public LeaveResponseDTO approveLeave(@PathVariable Long id) {
     // return leaveService.approveLeave(id);
     // }
+@PutMapping("/{id}/revoke")
+@PreAuthorize("hasRole('EMPLOYEE')")
+public LeaveResponseDTO revokeLeave(@PathVariable Long id, Authentication authentication) {
+    LeaveApplication leave = leaveService.revokeLeave(id, authentication);
+    return leaveService.mapToResponseDTO(leave);
+}
+
 
     @PutMapping("/{id}/approve")
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
@@ -102,4 +111,5 @@ public class LeaveController {
 
         return leaveService.getLeaveBalance(userId);
     }
+
 }

@@ -5,8 +5,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.godigit.LeaveAndAttendanceManagementSystem.config.CustomUserDetails;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveBalanceDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveRequestDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveResponseDTO;
@@ -140,6 +142,33 @@ public class LeaveServiceImpl implements LeaveService {
         return leaveRepo.findById(leaveId)
                 .orElseThrow(() -> new ResourceNotFoundException("Leave not found"));
     }
+//building.......
+
+
+    
+
+    public LeaveApplication revokeLeave(Long leaveId, Authentication authentication) {
+        // Find leave by ID
+        LeaveApplication leave = leaveRepo.findById(leaveId)
+                .orElseThrow(() -> new RuntimeException("Leave request not found"));
+
+        // Ensure the logged-in user is the owner of this leave
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        if (!leave.getUser().getId().equals(userDetails.getId())) {
+            throw new RuntimeException("You can only revoke your own leave requests");
+        }
+
+        // Allow revoke only if leave is still pending
+        if (leave.getStatus() != LeaveStatus.PENDING) {
+            throw new RuntimeException("Only pending leave requests can be revoked");
+        }
+
+        // Mark as revoked
+        leave.setStatus(LeaveStatus.REVOKED);
+        return leaveRepo.save(leave);
+    }
+
+
 
     public LeaveResponseDTO mapToResponseDTO(LeaveApplication leave) {
         return LeaveResponseDTO.builder()
