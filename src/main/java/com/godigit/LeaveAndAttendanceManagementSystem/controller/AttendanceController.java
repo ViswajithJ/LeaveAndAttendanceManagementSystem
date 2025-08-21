@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.AttendanceResponseDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.AttendanceStatusDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.Attendance;
-import com.godigit.LeaveAndAttendanceManagementSystem.service.AttendanceService;
+import com.godigit.LeaveAndAttendanceManagementSystem.service.Impl.AttendanceServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AttendanceController {
 
-    private final AttendanceService attendanceService;
+    private final AttendanceServiceImpl attendanceService;
 
     @PostMapping("/punchin/{userId}")
     // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")

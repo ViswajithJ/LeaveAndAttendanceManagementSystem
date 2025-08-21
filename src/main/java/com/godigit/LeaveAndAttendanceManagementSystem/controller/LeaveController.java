@@ -1,23 +1,29 @@
 package com.godigit.LeaveAndAttendanceManagementSystem.controller;
 
-import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveRequestDTO;
-import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveResponseDTO;
-import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveBalanceDTO;
-import com.godigit.LeaveAndAttendanceManagementSystem.service.LeaveService;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveBalanceDTO;
+import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveRequestDTO;
+import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveResponseDTO;
+import com.godigit.LeaveAndAttendanceManagementSystem.service.Impl.LeaveServiceImpl;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/leaves")
 @RequiredArgsConstructor
 public class LeaveController {
 
-    private final LeaveService leaveService;
+    private final LeaveServiceImpl leaveService;
 
     // Apply leave
     @PostMapping("/apply")

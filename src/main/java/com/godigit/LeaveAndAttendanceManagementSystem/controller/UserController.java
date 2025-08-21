@@ -14,21 +14,24 @@ import org.springframework.web.bind.annotation.RestController;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.UserCreateDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.UserDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.UserService;
+import com.godigit.LeaveAndAttendanceManagementSystem.service.Impl.UserServiceImpl;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
     // private PasswordEncoder passwordEncoder;
 
 
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
-        this.userService = userService;
-        // this.passwordEncoder = passwordEncoder;
-    }
+    // public UserController(UserServiceImpl userService) {
+    //     this.userService = userService;
+    //     // this.passwordEncoder = passwordEncoder;
+    // }
 
     // Only ADMIN can create new users
     @PreAuthorize("hasRole('ADMIN')") //uncomment later after proper security
