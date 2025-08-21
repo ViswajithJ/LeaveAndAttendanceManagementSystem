@@ -3,12 +3,14 @@ package com.godigit.LeaveAndAttendanceManagementSystem.service.Impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.AttendanceStatusDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.exception.ResourceNotFoundException;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.Attendance;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.Role;
 import com.godigit.LeaveAndAttendanceManagementSystem.repository.AttendanceRepository;
 import com.godigit.LeaveAndAttendanceManagementSystem.repository.UserRepository;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.AttendanceService;
@@ -28,7 +30,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         // check if already punched in and not punched out
         attendanceRepository.findByUserAndPunchOutTimeIsNull(user)
-                .ifPresent(a -> { throw new IllegalStateException("Already punched in. Punch out first."); });
+                .ifPresent(a -> {
+                    throw new IllegalStateException("Already punched in. Punch out first.");
+                });
 
         Attendance attendance = Attendance.builder()
                 .user(user)
@@ -67,14 +71,38 @@ public class AttendanceServiceImpl implements AttendanceService {
         return new AttendanceStatusDTO(user.getId(), status);
     }
 
-
     // for managers/admin
     public List<Attendance> getAllAttendance() {
         return attendanceRepository.findAll();
     }
-    //for manager
+
+    // for manager
     public List<Attendance> getTeamAttendance(Long managerId) {
         return attendanceRepository.findByManagerId(managerId);
+    }
+
+    public Boolean isTeamMember(Long managerId, Long userId) {
+        // Example: assuming User entity has `manager` field
+        return userRepository.findById(userId)
+                .map(user -> user.getManager() != null && user.getManager().getId().equals(managerId))
+                .orElse(false);
+    }
+
+    public void checkViewPermission(Long loggedInUserId, Role role, Long targetUserId) {
+        if (role.equals(Role.EMPLOYEE)) {
+            if (!loggedInUserId.equals(targetUserId)) {
+                throw new AccessDeniedException("Employees can only view their own attendance.");
+            }
+        }
+
+        if (role.equals(Role.MANAGER)) {
+            if (!loggedInUserId.equals(targetUserId) &&
+                    !isTeamMember(loggedInUserId, targetUserId)) {
+                throw new AccessDeniedException("Managers can only view their own or team members' attendance.");
+            }
+        }
+
+        // Admin = no restriction
     }
 
 }

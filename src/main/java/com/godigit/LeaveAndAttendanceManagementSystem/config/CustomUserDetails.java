@@ -2,10 +2,12 @@ package com.godigit.LeaveAndAttendanceManagementSystem.config;
 
 import java.util.Collection;
 
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.Role;
 
 public class CustomUserDetails implements UserDetails {
 
@@ -22,6 +24,10 @@ public class CustomUserDetails implements UserDetails {
     
     public Long getId() {
         return user.getId(); // expose user ID
+    }
+
+    public Role getRole() {
+        return user.getRole();
     }
 
     @Override
@@ -58,4 +64,6 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    
 }
