@@ -14,7 +14,7 @@ public interface LeaveService {
 
     LeaveResponseDTO approveLeave(Long leaveId, Long approverId, boolean isAdmin);
 
-    LeaveResponseDTO rejectLeave(Long leaveId,Long approverId, boolean isAdmin);
+    LeaveResponseDTO rejectLeave(Long leaveId, Long approverId, boolean isAdmin);
 
     List<LeaveResponseDTO> getLeavesByEmployee(Long userId);
 
@@ -24,9 +24,8 @@ public interface LeaveService {
 
     LeaveBalanceDTO getLeaveBalance(Long userId);
 
-
     LeaveApplication getLeaveOrThrow(Long leaveId);
 
-    LeaveResponseDTO mapToResponseDTO(LeaveApplication leave);
+    // LeaveResponseDTO mapToResponseDTO(LeaveApplication leave);
     LeaveApplication revokeLeave(Long leaveId, Authentication authentication);
 }

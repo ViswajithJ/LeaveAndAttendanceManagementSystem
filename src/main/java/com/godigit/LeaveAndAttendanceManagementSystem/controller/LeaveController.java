@@ -17,6 +17,7 @@ import com.godigit.LeaveAndAttendanceManagementSystem.config.CustomUserDetails;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveBalanceDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveRequestDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveResponseDTO;
+import com.godigit.LeaveAndAttendanceManagementSystem.mapper.LeaveMapper;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.Role;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.Impl.LeaveServiceImpl;
 import com.godigit.LeaveAndAttendanceManagementSystem.util.PermissionUtil;
@@ -49,7 +50,7 @@ public class LeaveController {
     @PreAuthorize("hasRole('EMPLOYEE', 'ADMIN', 'MANAGER')")
     public LeaveResponseDTO revokeLeave(@PathVariable Long id, Authentication authentication) {
         LeaveApplication leave = leaveService.revokeLeave(id, authentication);
-        return leaveService.mapToResponseDTO(leave);
+        return LeaveMapper.toResponseDto(leave);
     }
 
     @PutMapping("/{id}/approve")
