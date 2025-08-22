@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.godigit.LeaveAndAttendanceManagementSystem.config.CustomUserDetails;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.AttendanceResponseDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.AttendanceStatusDTO;
-import com.godigit.LeaveAndAttendanceManagementSystem.model.Attendance;
+import com.godigit.LeaveAndAttendanceManagementSystem.mapper.AttendanceMapper;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.Role;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.Impl.AttendanceServiceImpl;
@@ -36,7 +36,7 @@ public class AttendanceController {
     // @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public AttendanceResponseDTO punchIn(@AuthenticationPrincipal CustomUserDetails userDetails) {
         Long userId = userDetails.getId();
-        return mapToDto(attendanceService.punchIn(userId));
+        return AttendanceMapper.toDto(attendanceService.punchIn(userId));
     }
 
     @PostMapping("/punchout")
@@ -44,7 +44,7 @@ public class AttendanceController {
     // @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public AttendanceResponseDTO punchOut(@AuthenticationPrincipal CustomUserDetails userDetails) {
         Long userId = userDetails.getId();
-        return mapToDto(attendanceService.punchOut(userId));
+        return AttendanceMapper.toDto(attendanceService.punchOut(userId));
     }
 
     // @GetMapping("/employee/{userId}")
@@ -71,7 +71,7 @@ public class AttendanceController {
 
         return attendanceService.getMyAttendance(userId)
                 .stream()
-                .map(this::mapToDto)
+                .map(AttendanceMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -95,7 +95,7 @@ public class AttendanceController {
     public List<AttendanceResponseDTO> getAllLogs() {
         return attendanceService.getAllAttendance()
                 .stream()
-                .map(this::mapToDto)
+                .map(AttendanceMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -106,17 +106,17 @@ public class AttendanceController {
         User manager = userDetails.getUser();
         return attendanceService.getTeamAttendance(manager.getId())
                 .stream()
-                .map(this::mapToDto)
+                .map(AttendanceMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     // === DTO mapping kept here itself ===
-    private AttendanceResponseDTO mapToDto(Attendance attendance) {
-        return AttendanceResponseDTO.builder()
-                .id(attendance.getId())
-                .punchInTime(attendance.getPunchInTime())
-                .punchOutTime(attendance.getPunchOutTime())
-                .userId(attendance.getUser().getId())
-                .build();
-    }
+    // private AttendanceResponseDTO mapToDto(Attendance attendance) {
+    // return AttendanceResponseDTO.builder()
+    // .id(attendance.getId())
+    // .punchInTime(attendance.getPunchInTime())
+    // .punchOutTime(attendance.getPunchOutTime())
+    // .userId(attendance.getUser().getId())
+    // .build();
+    // }
 }

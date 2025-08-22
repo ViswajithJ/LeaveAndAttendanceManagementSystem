@@ -2,12 +2,12 @@ package com.godigit.LeaveAndAttendanceManagementSystem.service.Impl;
 
 import java.util.List;
 
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.UserCreateDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.UserDTO;
+import com.godigit.LeaveAndAttendanceManagementSystem.mapper.UserMapper;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveBalance;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
 import com.godigit.LeaveAndAttendanceManagementSystem.repository.LeaveBalanceRepository;
@@ -47,18 +47,18 @@ public class UserServiceImpl implements UserService {
         balance.setLeavesTaken(0);
 
         leaveBalanceRepository.save(balance);
-        return mapToDTO(saved);
+        return UserMapper.toDto(saved);
     }
 
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(this::mapToDTO)
+                .map(UserMapper::toDto)
                 .toList();
     }
 
     public UserDTO getUserById(Long id) {
         return userRepository.findById(id)
-                .map(this::mapToDTO)
+                .map(UserMapper::toDto)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
@@ -82,27 +82,27 @@ public class UserServiceImpl implements UserService {
         user.setRole(dto.getRole());
         user.setManager(manager);
 
-
-        User upadated=userRepository.save(user);
-        return mapToDTO(upadated);
+        User upadated = userRepository.save(user);
+        return UserMapper.toDto(upadated);
     }
 
     @Override
     public void deleteUser(Long id) {
-        User existing =userRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("User not found"));
+        User existing = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         leaveBalanceRepository.findByUser(existing).ifPresent(leaveBalanceRepository::delete);
         userRepository.delete(existing);
     }
 
-    public UserDTO mapToDTO(User user) {
-        UserDTO dto = new UserDTO();
-        dto.setId(user.getId());
-        dto.setFullName(user.getFullName());
-        dto.setEmail(user.getEmail());
-        dto.setRole(user.getRole());
-        dto.setManager_id(user.getManager() != null ? user.getManager().getId() : null);
-        return dto;
-    }
+    // public UserDTO mapToDTO(User user) {
+    // UserDTO dto = new UserDTO();
+    // dto.setId(user.getId());
+    // dto.setFullName(user.getFullName());
+    // dto.setEmail(user.getEmail());
+    // dto.setRole(user.getRole());
+    // dto.setManager_id(user.getManager() != null ? user.getManager().getId() :
+    // null);
+    // return dto;
+    // }
 }

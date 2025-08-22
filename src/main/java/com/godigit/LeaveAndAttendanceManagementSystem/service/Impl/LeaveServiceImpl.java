@@ -13,6 +13,7 @@ import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveBalanceDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveRequestDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveResponseDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.exception.ResourceNotFoundException;
+import com.godigit.LeaveAndAttendanceManagementSystem.mapper.LeaveMapper;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveApplication;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveBalance;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
@@ -36,7 +37,8 @@ public class LeaveServiceImpl implements LeaveService {
         LocalDate start = dto.getStartDate();
         LocalDate end = dto.getEndDate();
 
-        if (start.isAfter(end)) throw new IllegalArgumentException("Start date cannot be after end date");
+        if (start.isAfter(end))
+            throw new IllegalArgumentException("Start date cannot be after end date");
 
         User user = userRepo.findById(dto.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -51,9 +53,9 @@ public class LeaveServiceImpl implements LeaveService {
 
         // check overlapping leaves
         var conflicts = leaveRepo.findByUserAndStatusInAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
-                user, List.of(LeaveStatus.PENDING, LeaveStatus.APPROVED), end, start
-        );
-        if (!conflicts.isEmpty()) throw new IllegalStateException("Overlapping leave exists");
+                user, List.of(LeaveStatus.PENDING, LeaveStatus.APPROVED), end, start);
+        if (!conflicts.isEmpty())
+            throw new IllegalStateException("Overlapping leave exists");
 
         LeaveApplication leave = new LeaveApplication();
         leave.setUser(user);
@@ -62,20 +64,20 @@ public class LeaveServiceImpl implements LeaveService {
         leave.setReason(dto.getReason());
         leave.setStatus(LeaveStatus.PENDING);
 
-        return mapToResponseDTO(leaveRepo.save(leave));
+        return LeaveMapper.toResponseDto(leaveRepo.save(leave));
     }
 
     public LeaveResponseDTO approveLeave(Long leaveId, Long approverId, boolean isAdmin) {
         LeaveApplication leave = getLeaveOrThrow(leaveId);
         if (leave.getStatus() != LeaveStatus.PENDING)
             throw new IllegalStateException("Only PENDING leaves can be approved");
-    if (!isAdmin) {
-        // Manager approval check
-        Long employeeManagerId = leave.getUser().getManager().getId(); // employee’s manager
-        if (!employeeManagerId.equals(approverId)) {
-            throw new RuntimeException("You are not authorized to approve this leave");
+        if (!isAdmin) {
+            // Manager approval check
+            Long employeeManagerId = leave.getUser().getManager().getId(); // employee’s manager
+            if (!employeeManagerId.equals(approverId)) {
+                throw new RuntimeException("You are not authorized to approve this leave");
+            }
         }
-    }
         leave.setStatus(LeaveStatus.APPROVED);
         LeaveApplication saved = leaveRepo.save(leave);
 
@@ -86,41 +88,41 @@ public class LeaveServiceImpl implements LeaveService {
         balance.setLeavesTaken(balance.getLeavesTaken() + days);
         leaveBalanceRepo.save(balance);
 
-        return mapToResponseDTO(saved);
+        return LeaveMapper.toResponseDto(saved);
     }
 
-    public LeaveResponseDTO rejectLeave(Long leaveId,Long approverId, boolean isAdmin) {
+    public LeaveResponseDTO rejectLeave(Long leaveId, Long approverId, boolean isAdmin) {
         LeaveApplication leave = getLeaveOrThrow(leaveId);
         if (leave.getStatus() != LeaveStatus.PENDING)
             throw new IllegalStateException("Only PENDING leaves can be rejected");
         if (!isAdmin) {
-        // Manager approval check
-        Long employeeManagerId = leave.getUser().getManager().getId(); // employee’s manager
-        if (!employeeManagerId.equals(approverId)) {
-            throw new RuntimeException("You are not authorized to approve this leave");
+            // Manager approval check
+            Long employeeManagerId = leave.getUser().getManager().getId(); // employee’s manager
+            if (!employeeManagerId.equals(approverId)) {
+                throw new RuntimeException("You are not authorized to approve this leave");
+            }
         }
-    }
         leave.setStatus(LeaveStatus.REJECTED);
-        return mapToResponseDTO(leaveRepo.save(leave));
+        return LeaveMapper.toResponseDto(leaveRepo.save(leave));
     }
 
     public List<LeaveResponseDTO> getLeavesByEmployee(Long userId) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return leaveRepo.findByUser(user).stream()
-                .map(this::mapToResponseDTO)
+                .map(LeaveMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 
     public List<LeaveResponseDTO> getPendingLeaves() {
         return leaveRepo.findByStatus(LeaveStatus.PENDING).stream()
-                .map(this::mapToResponseDTO)
+                .map(LeaveMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 
     public List<LeaveResponseDTO> getAllLeaves() {
         return leaveRepo.findAll().stream()
-                .map(this::mapToResponseDTO)
+                .map(LeaveMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -142,10 +144,7 @@ public class LeaveServiceImpl implements LeaveService {
         return leaveRepo.findById(leaveId)
                 .orElseThrow(() -> new ResourceNotFoundException("Leave not found"));
     }
-//building.......
-
-
-    
+    // building.......
 
     public LeaveApplication revokeLeave(Long leaveId, Authentication authentication) {
         // Find leave by ID
@@ -168,17 +167,15 @@ public class LeaveServiceImpl implements LeaveService {
         return leaveRepo.save(leave);
     }
 
-
-
-    public LeaveResponseDTO mapToResponseDTO(LeaveApplication leave) {
-        return LeaveResponseDTO.builder()
-                .id(leave.getId())
-                .userId(leave.getUser().getId())
-                .startDate(leave.getStartDate())
-                .endDate(leave.getEndDate())
-                .reason(leave.getReason())
-                .status(leave.getStatus())
-                .build();
-    }
+    // public LeaveResponseDTO mapToResponseDTO(LeaveApplication leave) {
+    // return LeaveResponseDTO.builder()
+    // .id(leave.getId())
+    // .userId(leave.getUser().getId())
+    // .startDate(leave.getStartDate())
+    // .endDate(leave.getEndDate())
+    // .reason(leave.getReason())
+    // .status(leave.getStatus())
+    // .build();
+    // }
 
 }
