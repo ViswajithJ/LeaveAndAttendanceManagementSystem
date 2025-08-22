@@ -2,6 +2,13 @@ package com.godigit.LeaveAndAttendanceManagementSystem.service.Impl;
 
 import java.util.List;
 
+<<<<<<< Updated upstream
+=======
+import com.godigit.LeaveAndAttendanceManagementSystem.repository.AttendanceRepository;
+import com.godigit.LeaveAndAttendanceManagementSystem.repository.LeaveRepository;
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotBlank;
+>>>>>>> Stashed changes
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +30,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final LeaveBalanceRepository leaveBalanceRepository;
     private final PasswordEncoder passwordEncoder;
+
+
+    private final LeaveRepository leaveRepository;
+    private final AttendanceRepository attendanceRepository;
+
 
     public UserDTO createUser(UserCreateDTO dto) {
         User manager = null;
@@ -82,8 +94,14 @@ public class UserServiceImpl implements UserService {
         user.setRole(dto.getRole());
         user.setManager(manager);
 
+<<<<<<< Updated upstream
         User upadated = userRepository.save(user);
         return UserMapper.toDto(upadated);
+=======
+
+        User upadated = userRepository.save(user);
+        return mapToDTO(upadated);
+>>>>>>> Stashed changes
     }
 
     @Override
@@ -95,6 +113,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(existing);
     }
 
+<<<<<<< Updated upstream
     // public UserDTO mapToDTO(User user) {
     // UserDTO dto = new UserDTO();
     // dto.setId(user.getId());
@@ -106,3 +125,25 @@ public class UserServiceImpl implements UserService {
     // return dto;
     // }
 }
+=======
+    public UserDTO mapToDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setFullName(user.getFullName());
+        dto.setEmail(user.getEmail());
+        dto.setRole(user.getRole());
+        dto.setManager_id(user.getManager() != null ? user.getManager().getId() : null);
+        return dto;
+    }
+
+
+    @Override
+    @Transactional
+    public void deleteUserAndRelatedData(Long userId) {
+        leaveRepository.deleteByUserId(userId);
+        attendanceRepository.deleteByUserId(userId);
+        userRepository.deleteById(userId);
+
+    }
+}
+>>>>>>> Stashed changes

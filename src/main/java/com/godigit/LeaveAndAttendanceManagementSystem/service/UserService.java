@@ -16,6 +16,13 @@ public interface UserService {
 
     void deleteUser(Long id);
 
+<<<<<<< Updated upstream
     // UserDTO mapToDTO(User user);
+=======
+    UserDTO mapToDTO(User user);
+
+    void deleteUserAndRelatedData(Long userId);
+
+>>>>>>> Stashed changes
 
 }

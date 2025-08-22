@@ -46,6 +46,7 @@
 			<version>42.7.3</version> <!-- Use latest stable version -->
 		</dependency>
 
+
 		<!-- Spring Boot Starter Data JPA -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

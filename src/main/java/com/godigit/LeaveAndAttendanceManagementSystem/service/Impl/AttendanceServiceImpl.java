@@ -106,4 +106,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     // // Admin = no restriction
     // }
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 }
