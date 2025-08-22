@@ -24,6 +24,7 @@ public interface LeaveService {
 
     LeaveBalanceDTO getLeaveBalance(Long userId);
 
+
     LeaveApplication getLeaveOrThrow(Long leaveId);
 
     LeaveResponseDTO mapToResponseDTO(LeaveApplication leave);

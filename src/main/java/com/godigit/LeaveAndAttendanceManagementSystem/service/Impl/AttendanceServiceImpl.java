@@ -74,6 +74,16 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendanceRepository.findAll();
     }
 
+    @Override
+    public User findUserById(Long userId) {
+        return null;
+    }
+
+    @Override
+    public void saveAttendance(Attendance attendance) {
+
+    }
+
     // for manager
     public List<Attendance> getTeamAttendance(Long managerId) {
         return attendanceRepository.findByManagerId(managerId);
@@ -105,5 +115,11 @@ public class AttendanceServiceImpl implements AttendanceService {
     // }
     // // Admin = no restriction
     // }
+
+
+
+
+
+
 
 }
