@@ -2,6 +2,7 @@ package com.godigit.LeaveAndAttendanceManagementSystem.service.Impl;
 
 import java.util.List;
 
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +21,15 @@ import lombok.AllArgsConstructor;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final LeaveBalanceRepository leaveBalanceRepository; 
+    private final LeaveBalanceRepository leaveBalanceRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserDTO createUser(UserCreateDTO dto) {
         User manager = null;
-         if (dto.getManagerId() != null) {
-        manager = userRepository.findById(dto.getManagerId())
-                .orElseThrow(() -> new RuntimeException("Manager not found"));
-    }
+        if (dto.getManagerId() != null) {
+            manager = userRepository.findById(dto.getManagerId())
+                    .orElseThrow(() -> new RuntimeException("Manager not found"));
+        }
 
         User user = new User();
         user.setFullName(dto.getFullName());
@@ -59,6 +60,40 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id)
                 .map(this::mapToDTO)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public UserDTO updateUser(Long id, UserCreateDTO dto) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+
+        User manager = null;
+        if (dto.getManagerId() != null) {
+            manager = userRepository.findById(dto.getManagerId())
+                    .orElseThrow(() -> new RuntimeException("Manager not found"));
+        }
+
+        user.setFullName(dto.getFullName());
+        user.setEmail(dto.getEmail());
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        user.setRole(dto.getRole());
+        user.setManager(manager);
+
+
+        User upadated=userRepository.save(user);
+        return mapToDTO(upadated);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        User existing =userRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("User not found"));
+
+        leaveBalanceRepository.findByUser(existing).ifPresent(leaveBalanceRepository::delete);
+        userRepository.delete(existing);
     }
 
     public UserDTO mapToDTO(User user) {
