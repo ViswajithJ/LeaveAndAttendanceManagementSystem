@@ -3,6 +3,9 @@ package com.godigit.LeaveAndAttendanceManagementSystem.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -81,11 +84,9 @@ public class AttendanceController {
     // for managers/admins later
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public List<AttendanceResponseDTO> getAllLogs() {
-        return attendanceService.getAllAttendance()
-                .stream()
-                .map(AttendanceMapper::toDto)
-                .collect(Collectors.toList());
+    public Page<AttendanceResponseDTO> getAllLogs(
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+        return attendanceService.getAllAttendance(pageable);
     }
 
     @GetMapping("/team")

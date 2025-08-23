@@ -1,13 +1,15 @@
 package com.godigit.LeaveAndAttendanceManagementSystem.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.UserCreateDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.UserDTO;
 
 public interface UserService {
     UserDTO createUser(UserCreateDTO dto);
 
-    List<UserDTO> getAllUsers();
+    Page<UserDTO> getAllUsers(Pageable pageable);
 
     UserDTO getUserById(Long id);
 

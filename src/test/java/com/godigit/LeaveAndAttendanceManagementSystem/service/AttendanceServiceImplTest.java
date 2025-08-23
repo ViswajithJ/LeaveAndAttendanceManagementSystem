@@ -17,7 +17,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import com.godigit.LeaveAndAttendanceManagementSystem.dto.AttendanceResponseDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.AttendanceStatusDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.exception.ResourceNotFoundException;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.Attendance;
@@ -191,13 +196,33 @@ public class AttendanceServiceImplTest {
     // test case for getallattendance
     @Test
     void getAllAttendance_ShouldReturnAllRecords() {
-        List<Attendance> mockList = List.of(new Attendance(), new Attendance(), new Attendance());
-        when(attendanceRepository.findAll()).thenReturn(mockList);
+        // Arrange
+        User user = new User();
+        user.setId(1L); // whatever your User has
 
-        List<Attendance> result = attendanceService.getAllAttendance();
+        Attendance att1 = new Attendance();
+        att1.setUser(user);
 
-        assertEquals(3, result.size());
-        verify(attendanceRepository).findAll();
+        Attendance att2 = new Attendance();
+        att2.setUser(user);
+
+        Attendance att3 = new Attendance();
+        att3.setUser(user);
+
+        List<Attendance> mockList = List.of(att1, att2, att3);
+        Pageable pageable = PageRequest.of(0, 10); // simulate first page, size 10
+
+        Page<Attendance> mockPage = new PageImpl<>(mockList, pageable, mockList.size());
+
+        when(attendanceRepository.findAll(pageable)).thenReturn(mockPage);
+
+        // Act
+        Page<AttendanceResponseDTO> result = attendanceService.getAllAttendance(pageable);
+
+        // Assert
+        assertEquals(3, result.getContent().size()); // content size = 3
+        assertEquals(3, result.getTotalElements()); // total elements = 3
+        verify(attendanceRepository).findAll(pageable);
     }
 
     // test cases for getteamattendance

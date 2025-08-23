@@ -3,10 +3,14 @@ package com.godigit.LeaveAndAttendanceManagementSystem.service.Impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.godigit.LeaveAndAttendanceManagementSystem.dto.AttendanceResponseDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.AttendanceStatusDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.exception.ResourceNotFoundException;
+import com.godigit.LeaveAndAttendanceManagementSystem.mapper.AttendanceMapper;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.Attendance;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
 import com.godigit.LeaveAndAttendanceManagementSystem.repository.AttendanceRepository;
@@ -102,10 +106,10 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     // for managers/admin
-    public List<Attendance> getAllAttendance() {
+    public Page<AttendanceResponseDTO> getAllAttendance(Pageable pageable) {
         log.debug("Fetching all attendance records");
 
-        return attendanceRepository.findAll();
+        return attendanceRepository.findAll(pageable).map(AttendanceMapper::toDto);
     }
 
     // for manager
