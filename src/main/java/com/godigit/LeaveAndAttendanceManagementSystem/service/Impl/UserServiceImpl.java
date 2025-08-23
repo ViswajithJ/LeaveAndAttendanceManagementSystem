@@ -1,7 +1,7 @@
 package com.godigit.LeaveAndAttendanceManagementSystem.service.Impl;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,12 +66,18 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toDto(saved);
     }
 
-    public List<UserDTO> getAllUsers() {
-        log.info("Fetching all users");
+    // public List<UserDTO> getAllUsers() {
+    // log.info("Fetching all users");
 
-        return userRepository.findAll().stream()
-                .map(UserMapper::toDto)
-                .toList();
+    // return userRepository.findAll().stream()
+    // .map(UserMapper::toDto)
+    // .toList();
+    // }
+    public Page<UserDTO> getAllUsers(Pageable pageable) {
+        log.info("Fetching users with pagination: {}", pageable);
+
+        return userRepository.findAll(pageable) // this now returns Page<User>
+                .map(UserMapper::toDto); // convert Page<User> → Page<UserDTO>
     }
 
     public UserDTO getUserById(Long id) {

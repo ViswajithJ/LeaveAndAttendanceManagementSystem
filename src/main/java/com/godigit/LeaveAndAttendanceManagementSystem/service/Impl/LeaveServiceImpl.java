@@ -5,6 +5,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -146,11 +148,11 @@ public class LeaveServiceImpl implements LeaveService {
                 .collect(Collectors.toList());
     }
 
-    public List<LeaveResponseDTO> getAllLeaves() {
+    public Page<LeaveResponseDTO> getAllLeaves(Pageable pageable) {
         log.info("Fetching all leaves");
-        return leaveRepo.findAll().stream()
-                .map(LeaveMapper::toResponseDto)
-                .collect(Collectors.toList());
+
+        return leaveRepo.findAll(pageable) // returns Page<LeaveApplication>
+                .map(LeaveMapper::toResponseDto); // Page has map() built in
     }
 
     public LeaveBalanceDTO getLeaveBalance(Long userId) {

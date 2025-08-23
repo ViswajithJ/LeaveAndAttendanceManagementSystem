@@ -2,6 +2,8 @@ package com.godigit.LeaveAndAttendanceManagementSystem.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveBalanceDTO;
@@ -20,7 +22,7 @@ public interface LeaveService {
 
     List<LeaveResponseDTO> getPendingLeaves();
 
-    List<LeaveResponseDTO> getAllLeaves();
+    Page<LeaveResponseDTO> getAllLeaves(Pageable pageable);
 
     LeaveBalanceDTO getLeaveBalance(Long userId);
 

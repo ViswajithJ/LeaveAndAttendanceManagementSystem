@@ -2,6 +2,9 @@ package com.godigit.LeaveAndAttendanceManagementSystem.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,10 +21,10 @@ import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveBalanceDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveRequestDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.LeaveResponseDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.mapper.LeaveMapper;
+import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveApplication;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.enums.Role;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.Impl.LeaveServiceImpl;
 import com.godigit.LeaveAndAttendanceManagementSystem.util.PermissionUtil;
-import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveApplication;
 
 import lombok.RequiredArgsConstructor;
 
@@ -87,8 +90,10 @@ public class LeaveController {
     // Get all leaves
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<LeaveResponseDTO> getAllLeaves() {
-        return leaveService.getAllLeaves();
+    public Page<LeaveResponseDTO> getAllLeaves(
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+        return leaveService.getAllLeaves(pageable);
+
     }
 
     // Get leave balance
