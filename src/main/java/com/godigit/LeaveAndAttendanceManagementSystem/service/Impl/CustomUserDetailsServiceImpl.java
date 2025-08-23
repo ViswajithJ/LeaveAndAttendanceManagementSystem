@@ -10,7 +10,9 @@ import com.godigit.LeaveAndAttendanceManagementSystem.repository.UserRepository;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.CustomUserDetailsService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
@@ -19,13 +21,15 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        log.info("Attempting to load user with email: {}", email);
+
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        // return org.springframework.security.core.userdetails.User
-        //         .withUsername(user.getEmail())
-        //         .password(user.getPassword())
-        //         .roles(user.getRole().name()) // assumes Role enum: ADMIN, USER, MANAGER
-        //         .build();
+                .orElseThrow(() -> {
+                    log.error("User not found with email: {}", email);
+                    return new UsernameNotFoundException("User not found");
+                });
+        log.debug("User loaded successfully: id={}, role={}", user.getId(), user.getRole());
+
         return new CustomUserDetails(user);
     }
 }

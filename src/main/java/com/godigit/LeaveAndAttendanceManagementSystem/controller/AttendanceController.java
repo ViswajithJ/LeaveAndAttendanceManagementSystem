@@ -47,17 +47,6 @@ public class AttendanceController {
         return AttendanceMapper.toDto(attendanceService.punchOut(userId));
     }
 
-    // @GetMapping("/employee/{userId}")
-    // // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
-    // @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
-    // public List<AttendanceResponseDTO> getMyLogs(@AuthenticationPrincipal
-    // CustomUserDetails userDetails) {
-    // Long userId = userDetails.getId();
-    // return attendanceService.getMyAttendance(userId)
-    // .stream()
-    // .map(this::mapToDto)
-    // .collect(Collectors.toList());
-    // }
     @GetMapping("/employee/{userId}")
     @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
     public List<AttendanceResponseDTO> getEmployeeLogs(
@@ -109,14 +98,4 @@ public class AttendanceController {
                 .map(AttendanceMapper::toDto)
                 .collect(Collectors.toList());
     }
-
-    // === DTO mapping kept here itself ===
-    // private AttendanceResponseDTO mapToDto(Attendance attendance) {
-    // return AttendanceResponseDTO.builder()
-    // .id(attendance.getId())
-    // .punchInTime(attendance.getPunchInTime())
-    // .punchOutTime(attendance.getPunchOutTime())
-    // .userId(attendance.getUser().getId())
-    // .build();
-    // }
 }

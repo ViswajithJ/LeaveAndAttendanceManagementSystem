@@ -8,7 +8,9 @@ import com.godigit.LeaveAndAttendanceManagementSystem.repository.LeaveBalanceRep
 import com.godigit.LeaveAndAttendanceManagementSystem.service.LeaveAccrualService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LeaveAccrualServiceImpl implements LeaveAccrualService {
@@ -22,10 +24,21 @@ public class LeaveAccrualServiceImpl implements LeaveAccrualService {
     @Scheduled(cron = "0 0 0 1 * *") // second minute hour day-of-month month day-of-week
     @Transactional
     public void accrueMonthlyLeave() {
-        leaveBalanceRepo.findAll().forEach(balance -> {
-            balance.setTotalLeaves(balance.getTotalLeaves() + 1);
-            leaveBalanceRepo.save(balance);
-        });
-        System.out.println("Monthly leave accrual completed for all users.");
+        log.info("Starting monthly leave accrual job...");
+
+        int updatedRows = leaveBalanceRepo.incrementLeaveBalanceForAll();
+
+        log.info("Monthly leave accrual completed successfully. {} leave balances updated.", updatedRows);
+
+    }
+
+    @Scheduled(cron = "0 0 0 1 1 *") // At midnight on January 1st every year
+    @Transactional
+    public void resetYearlyLeave() {
+        log.info("Starting yearly leave reset job...");
+
+        int updatedRows = leaveBalanceRepo.resetLeaveBalanceForAll();
+
+        log.info("Yearly leave reset completed. {} leave balances reset to default.", updatedRows);
     }
 }

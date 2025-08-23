@@ -15,7 +15,9 @@ import com.godigit.LeaveAndAttendanceManagementSystem.repository.UserRepository;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.UserService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -25,10 +27,17 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserDTO createUser(UserCreateDTO dto) {
+        log.info("Creating user with email: {}", dto.getEmail());
+
         User manager = null;
         if (dto.getManagerId() != null) {
             manager = userRepository.findById(dto.getManagerId())
-                    .orElseThrow(() -> new RuntimeException("Manager not found"));
+                    .orElseThrow(() -> {
+                        log.error("Manager not found with ID: {}", dto.getManagerId());
+                        return new RuntimeException("Manager not found");
+                    });
+            log.debug("Assigned manager: {}", manager.getEmail());
+
         }
 
         User user = new User();
@@ -40,6 +49,8 @@ public class UserServiceImpl implements UserService {
         user.setManager(manager);
 
         User saved = userRepository.save(user);
+        log.info("User created successfully with ID: {}", saved.getId());
+
         // Initialize leave balance for the new user
         LeaveBalance balance = new LeaveBalance();
         balance.setUser(saved);
@@ -47,62 +58,82 @@ public class UserServiceImpl implements UserService {
         balance.setLeavesTaken(0);
 
         leaveBalanceRepository.save(balance);
+        log.debug("Leave balance initialized for user ID: {}", saved.getId());
+
         return UserMapper.toDto(saved);
     }
 
     public List<UserDTO> getAllUsers() {
+        log.info("Fetching all users");
+
         return userRepository.findAll().stream()
                 .map(UserMapper::toDto)
                 .toList();
     }
 
     public UserDTO getUserById(Long id) {
+        log.info("Fetching user by ID: {}", id);
+
         return userRepository.findById(id)
                 .map(UserMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> {
+                    log.error("User not found with ID: {}", id);
+                    return new RuntimeException("User not found");
+                });
     }
 
     @Override
     public UserDTO updateUser(Long id, UserCreateDTO dto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        log.info("Updating user with ID: {}", id);
+
+        User user = userRepository.findById(id).orElseThrow(() -> {
+            log.error("User not found with ID: {}", id);
+            return new RuntimeException("User not found");
+        });
 
         User manager = null;
         if (dto.getManagerId() != null) {
             manager = userRepository.findById(dto.getManagerId())
-                    .orElseThrow(() -> new RuntimeException("Manager not found"));
+                    .orElseThrow(() -> {
+                        log.error("Manager not found with ID: {}", dto.getManagerId());
+                        return new RuntimeException("Manager not found");
+                    });
+            log.debug("Reassigning manager to: {}", manager.getEmail());
+
         }
 
         user.setFullName(dto.getFullName());
         user.setEmail(dto.getEmail());
 
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            log.debug("Updating password for user ID: {}", id);
+
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
 
         user.setRole(dto.getRole());
         user.setManager(manager);
 
-        User upadated = userRepository.save(user);
-        return UserMapper.toDto(upadated);
+        User updated = userRepository.save(user);
+        log.info("User updated successfully with ID: {}", updated.getId());
+
+        return UserMapper.toDto(updated);
     }
 
     @Override
     public void deleteUser(Long id) {
+        log.warn("Deleting user with ID: {}", id);
+
         User existing = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+                .orElseThrow(() -> {
+                    log.error("User not found with ID: {}", id);
+                    return new RuntimeException("User not found");
+                });
         leaveBalanceRepository.findByUser(existing).ifPresent(leaveBalanceRepository::delete);
-        userRepository.delete(existing);
-    }
+        log.debug("Deleted leave balance for user ID: {}", id);
 
-    // public UserDTO mapToDTO(User user) {
-    // UserDTO dto = new UserDTO();
-    // dto.setId(user.getId());
-    // dto.setFullName(user.getFullName());
-    // dto.setEmail(user.getEmail());
-    // dto.setRole(user.getRole());
-    // dto.setManager_id(user.getManager() != null ? user.getManager().getId() :
-    // null);
-    // return dto;
-    // }
+        userRepository.delete(existing);
+        log.info("User deleted successfully with ID: {}", id);
+
+    }
 }
