@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.UserCreateDTO;
 import com.godigit.LeaveAndAttendanceManagementSystem.dto.UserDTO;
@@ -11,6 +12,7 @@ import com.godigit.LeaveAndAttendanceManagementSystem.mapper.UserMapper;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.LeaveBalance;
 import com.godigit.LeaveAndAttendanceManagementSystem.model.User;
 import com.godigit.LeaveAndAttendanceManagementSystem.repository.LeaveBalanceRepository;
+import com.godigit.LeaveAndAttendanceManagementSystem.repository.LeaveRepository;
 import com.godigit.LeaveAndAttendanceManagementSystem.repository.UserRepository;
 import com.godigit.LeaveAndAttendanceManagementSystem.service.UserService;
 
@@ -23,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final LeaveRepository leaveRepository;
     private final LeaveBalanceRepository leaveBalanceRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -121,6 +124,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
         log.warn("Deleting user with ID: {}", id);
 
@@ -131,6 +135,9 @@ public class UserServiceImpl implements UserService {
                 });
         leaveBalanceRepository.findByUser(existing).ifPresent(leaveBalanceRepository::delete);
         log.debug("Deleted leave balance for user ID: {}", id);
+
+        leaveRepository.deleteAllByUser(existing);
+        log.debug("Deleted all leaves for user ID: {}", id);
 
         userRepository.delete(existing);
         log.info("User deleted successfully with ID: {}", id);

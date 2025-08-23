@@ -21,14 +21,13 @@ public class UserController {
     private final UserServiceImpl userService;
     // private PasswordEncoder passwordEncoder;
 
-
     // public UserController(UserServiceImpl userService) {
-    //     this.userService = userService;
-    //     // this.passwordEncoder = passwordEncoder;
+    // this.userService = userService;
+    // // this.passwordEncoder = passwordEncoder;
     // }
 
     // Only ADMIN can create new users
-    @PreAuthorize("hasRole('ADMIN')") //uncomment later after proper security
+    @PreAuthorize("hasRole('ADMIN')") // uncomment later after proper security
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserCreateDTO dto) {
         // dto.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -36,24 +35,25 @@ public class UserController {
     }
 
     // ADMIN and MANAGER can list all users
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')") //here tooo
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')") // here tooo
     @GetMapping
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    //ADMIN only:Update user details
+    // ADMIN only:Update user details
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id,@Valid @RequestBody UserCreateDTO dto){
-        UserDTO updateUser=userService.updateUser(id,dto);
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserCreateDTO dto) {
+        UserDTO updateUser = userService.updateUser(id, dto);
         return ResponseEntity.ok(updateUser);
     }
-    //ADMIN: Delete users
+
+    // ADMIN: Delete users
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id){
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return ResponseEntity.ok("User with Id"+ id +"deleted successfully!");
+        return ResponseEntity.ok("User with Id " + id + " deleted successfully!");
     }
 }

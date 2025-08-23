@@ -15,4 +15,6 @@ public interface LeaveRepository extends JpaRepository<LeaveApplication, Long> {
             User user, List<LeaveStatus> statuses, LocalDate end, LocalDate start);
 
     List<LeaveApplication> findByStatus(LeaveStatus status);
+
+    void deleteAllByUser(User user);
 }
