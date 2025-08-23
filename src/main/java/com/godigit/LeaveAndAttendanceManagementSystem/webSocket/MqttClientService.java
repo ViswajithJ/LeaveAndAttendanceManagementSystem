@@ -1,7 +1,5 @@
 package com.godigit.LeaveAndAttendanceManagementSystem.webSocket;
 
-
-import com.godigit.LeaveAndAttendanceManagementSystem.webSocket.MqttConfig;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;

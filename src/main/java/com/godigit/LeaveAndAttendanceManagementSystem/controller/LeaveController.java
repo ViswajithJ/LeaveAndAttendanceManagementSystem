@@ -40,12 +40,6 @@ public class LeaveController {
         return leaveService.applyLeave(dto);
     }
 
-    // Approve leave
-    // @PutMapping("/{id}/approve")
-    // @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    // public LeaveResponseDTO approveLeave(@PathVariable Long id) {
-    // return leaveService.approveLeave(id);
-    // }
     @PutMapping("/{id}/revoke")
     @PreAuthorize("hasRole('EMPLOYEE', 'ADMIN', 'MANAGER')")
     public LeaveResponseDTO revokeLeave(@PathVariable Long id, Authentication authentication) {

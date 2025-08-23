@@ -1,4 +1,5 @@
 .vscode/
 target/
 .idea/
+logs/
 src/main/resources/application.properties
