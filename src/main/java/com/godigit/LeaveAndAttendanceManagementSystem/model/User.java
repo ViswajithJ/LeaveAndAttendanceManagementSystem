@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -31,6 +32,7 @@ public class User {
     @Getter@Setter @NotBlank
     private String fullName;
 
+    @Email
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -45,6 +47,9 @@ public class User {
     // 🔹 Optional: reverse side (list of employees managed by this user)
     @OneToMany(mappedBy = "manager")
     private List<User> teamMembers;
+
+ 
+
 
 
 }
