@@ -97,7 +97,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+			<!-- <scope>runtime</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -162,6 +162,12 @@
 			<version>4.0.0</version>
 		</dependency>
 
+		<dependency>
+    <groupId>org.liquibase</groupId>
+    <artifactId>liquibase-core</artifactId>
+        </dependency>
+
+
 	</dependencies>
 
 	<build>
@@ -178,6 +184,31 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+			<!-- <plugin> -->
+    <!-- <groupId>org.liquibase</groupId>
+    <artifactId>liquibase-maven-plugin</artifactId>
+    <version>4.29.2</version>
+    <configuration>
+        <propertyFileWillOverride>false</propertyFileWillOverride>
+    </configuration>
+</plugin> -->
+<plugin>
+    <groupId>org.liquibase</groupId>
+    <artifactId>liquibase-maven-plugin</artifactId>
+    <version>4.29.2</version>
+    <configuration>
+        <propertyFileWillOverride>false</propertyFileWillOverride>
+        <changeLogFile>src/main/resources/db/changelog/db.changelog-master.yaml</changeLogFile>
+        <outputChangeLogFile>src/main/resources/db/changelog/changes/v1-initial-schema.yaml</outputChangeLogFile>
+        <url>jdbc:postgresql://localhost:5432/attendanceapp</url>
+        <username>postgres</username>
+        <password>qwerty</password>
+        <driver>org.postgresql.Driver</driver>
+    </configuration>
+</plugin>
+
+
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

@@ -1,0 +1,198 @@
+# databaseChangeLog:
+# - changeSet:
+#     id: 1755969544675-1
+#     author: JAIN C JOHN (generated)
+#     changes:
+#     - createTable:
+#         columns:
+#         - column:
+#             autoIncrement: true
+#             constraints:
+#               nullable: false
+#               primaryKey: true
+#               primaryKeyName: leave_application_pkey
+#             name: id
+#             type: BIGINT
+#         - column:
+#             name: end_date
+#             type: date
+#         - column:
+#             name: reason
+#             type: VARCHAR(255)
+#         - column:
+#             name: start_date
+#             type: date
+#         - column:
+#             name: status
+#             type: VARCHAR(255)
+#         - column:
+#             name: user_id
+#             type: BIGINT
+#         tableName: leave_application
+# - changeSet:
+#     id: 1755969544675-2
+#     author: JAIN C JOHN (generated)
+#     changes:
+#     - createTable:
+#         columns:
+#         - column:
+#             autoIncrement: true
+#             constraints:
+#               nullable: false
+#               primaryKey: true
+#               primaryKeyName: users_pkey
+#             name: id
+#             type: BIGINT
+#         - column:
+#             constraints:
+#               nullable: false
+#             name: email
+#             type: VARCHAR(255)
+#         - column:
+#             name: full_name
+#             type: VARCHAR(255)
+#         - column:
+#             name: password
+#             type: VARCHAR(255)
+#         - column:
+#             name: role
+#             type: VARCHAR(255)
+#         - column:
+#             name: manager_id
+#             type: BIGINT
+#         tableName: users
+# - changeSet:
+#     id: 1755969544675-3
+#     author: JAIN C JOHN (generated)
+#     changes:
+#     - createTable:
+#         columns:
+#         - column:
+#             autoIncrement: true
+#             constraints:
+#               nullable: false
+#               primaryKey: true
+#               primaryKeyName: leave_balance_pkey
+#             name: id
+#             type: BIGINT
+#         - column:
+#             constraints:
+#               nullable: false
+#             name: leaves_taken
+#             type: INTEGER
+#         - column:
+#             constraints:
+#               nullable: false
+#             name: total_leaves
+#             type: INTEGER
+#         - column:
+#             name: user_id
+#             type: BIGINT
+#         tableName: leave_balance
+# - changeSet:
+#     id: 1755969544675-4
+#     author: JAIN C JOHN (generated)
+#     changes:
+#     - addUniqueConstraint:
+#         columnNames: email
+#         constraintName: uk6dotkott2kjsp8vw4d0m25fb7
+#         tableName: users
+# - changeSet:
+#     id: 1755969544675-5
+#     author: JAIN C JOHN (generated)
+#     changes:
+#     - addUniqueConstraint:
+#         columnNames: user_id
+#         constraintName: uklu9v85mhacw6njrteqgpu7ues
+#         tableName: leave_balance
+# - changeSet:
+#     id: 1755969544675-6
+#     author: JAIN C JOHN (generated)
+#     changes:
+#     - createTable:
+#         columns:
+#         - column:
+#             autoIncrement: true
+#             constraints:
+#               nullable: false
+#               primaryKey: true
+#               primaryKeyName: attendance_pkey
+#             name: id
+#             type: BIGINT
+#         - column:
+#             name: punch_in_time
+#             type: TIMESTAMP WITHOUT TIME ZONE
+#         - column:
+#             name: punch_out_time
+#             type: TIMESTAMP WITHOUT TIME ZONE
+#         - column:
+#             name: user_id
+#             type: BIGINT
+#         tableName: attendance
+# - changeSet:
+#     id: 1755969544675-7
+#     author: JAIN C JOHN (generated)
+#     changes:
+#     - addForeignKeyConstraint:
+#         baseColumnNames: manager_id
+#         baseTableName: users
+#         constraintName: fk5p1ci5btqfwvtaqx5n2wxi182
+#         deferrable: false
+#         initiallyDeferred: false
+#         onDelete: NO ACTION
+#         onUpdate: NO ACTION
+#         referencedColumnNames: id
+#         referencedTableName: users
+#         validate: true
+# - changeSet:
+#     id: 1755969544675-8
+#     author: JAIN C JOHN (generated)
+#     changes:
+#     - addForeignKeyConstraint:
+#         baseColumnNames: user_id
+#         baseTableName: leave_application
+#         constraintName: fke3r7odvddyx8uhrqcsdx7a2s
+#         deferrable: false
+#         initiallyDeferred: false
+#         onDelete: NO ACTION
+#         onUpdate: NO ACTION
+#         referencedColumnNames: id
+#         referencedTableName: users
+#         validate: true
+# - changeSet:
+#     id: 1755969544675-9
+#     author: JAIN C JOHN (generated)
+#     changes:
+#     - addForeignKeyConstraint:
+#         baseColumnNames: user_id
+#         baseTableName: leave_balance
+#         constraintName: fkga300d8rw4i0i0tqrmtr5i3pj
+#         deferrable: false
+#         initiallyDeferred: false
+#         onDelete: NO ACTION
+#         onUpdate: NO ACTION
+#         referencedColumnNames: id
+#         referencedTableName: users
+#         validate: true
+# - changeSet:
+#     id: 1755969544675-10
+#     author: JAIN C JOHN (generated)
+#     changes:
+#     - addForeignKeyConstraint:
+#         baseColumnNames: user_id
+#         baseTableName: attendance
+#         constraintName: fkjcaqd29v2qy723owsdah2t8vx
+#         deferrable: false
+#         initiallyDeferred: false
+#         onDelete: NO ACTION
+#         onUpdate: NO ACTION
+#         referencedColumnNames: id
+#         referencedTableName: users
+#         validate: true
+
+databaseChangeLog:
+  - changeSet:
+      id: baseline
+      author: john
+      comment: "Baseline - existing schema, no changes applied by Liquibase"
+      changes: []
