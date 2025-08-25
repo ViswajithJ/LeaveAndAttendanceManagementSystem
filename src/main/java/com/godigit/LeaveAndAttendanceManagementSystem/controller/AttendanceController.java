@@ -35,16 +35,12 @@ public class AttendanceController {
     private final PermissionUtil permissionUtil;
 
     @PostMapping("/punchin")
-    // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
-    // @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public AttendanceResponseDTO punchIn(@AuthenticationPrincipal CustomUserDetails userDetails) {
         Long userId = userDetails.getId();
         return AttendanceMapper.toDto(attendanceService.punchIn(userId));
     }
 
     @PostMapping("/punchout")
-    // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
-    // @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public AttendanceResponseDTO punchOut(@AuthenticationPrincipal CustomUserDetails userDetails) {
         Long userId = userDetails.getId();
         return AttendanceMapper.toDto(attendanceService.punchOut(userId));
@@ -69,7 +65,6 @@ public class AttendanceController {
 
     @GetMapping("/status/{userId}")
     @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
-    // @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public AttendanceStatusDTO getAttendanceStatus(@PathVariable Long userId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
@@ -81,7 +76,7 @@ public class AttendanceController {
         return attendanceService.getAttendanceStatus(userId);
     }
 
-    // for managers/admins later
+    // for admins
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public Page<AttendanceResponseDTO> getAllLogs(
@@ -89,6 +84,7 @@ public class AttendanceController {
         return attendanceService.getAllAttendance(pageable);
     }
 
+    // for admin/manager
     @GetMapping("/team")
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public List<AttendanceResponseDTO> getTeamLogs(Authentication authentication) {

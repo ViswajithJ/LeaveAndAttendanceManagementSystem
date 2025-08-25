@@ -14,12 +14,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     List<Attendance> findByUser(User user);
 
     Optional<Attendance> findByUserAndPunchOutTimeIsNull(User user);
-    
-    // @Query("SELECT a FROM Attendance a WHERE a.employee.team.manager.id = :managerId")
-    // List<Attendance> findTeamAttendance(Long managerId);
 
-    // @Query("SELECT a FROM Attendance a WHERE a.user.manager.id = :managerId")
-    // List<Attendance> findByManagerId(Long managerId);
-     @Query("SELECT a FROM Attendance a WHERE a.user.manager.id = :managerId")
+    @Query("SELECT a FROM Attendance a WHERE a.user.manager.id = :managerId")
     List<Attendance> findByManagerId(@Param("managerId") Long managerId);
 }

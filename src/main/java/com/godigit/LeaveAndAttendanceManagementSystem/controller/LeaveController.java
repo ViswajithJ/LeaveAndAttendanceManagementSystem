@@ -74,7 +74,6 @@ public class LeaveController {
 
     // Get leaves of specific employee
     @GetMapping("/employee/{userId}")
-    // @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
     @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public List<LeaveResponseDTO> getLeavesByEmployee(@PathVariable Long userId) {
         return leaveService.getLeavesByEmployee(userId);
@@ -99,11 +98,10 @@ public class LeaveController {
     // Get leave balance
     @GetMapping("/{userId}/balance")
     @PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','ADMIN')")
-    // @PreAuthorize("#userId == principal.id or hasAnyRole('MANAGER','ADMIN')")
     public LeaveBalanceDTO getLeaveBalance(@PathVariable Long userId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         Long loggedInUserId = userDetails.getId();
-        Role role = userDetails.getRole(); // assuming you expose role in CustomUserDetails
+        Role role = userDetails.getRole();
 
         permissionUtil.checkViewPermission(loggedInUserId, role, userId);
 

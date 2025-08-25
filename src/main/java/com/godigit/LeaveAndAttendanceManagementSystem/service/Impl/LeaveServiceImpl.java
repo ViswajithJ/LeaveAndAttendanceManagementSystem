@@ -43,11 +43,13 @@ public class LeaveServiceImpl implements LeaveService {
         LocalDate start = dto.getStartDate();
         LocalDate end = dto.getEndDate();
 
+        // check if start date comes after end date, if so throw error
         if (start.isAfter(end)) {
             log.warn("Invalid leave request: start date {} after end date {}", start, end);
             throw new IllegalArgumentException("Start date cannot be after end date");
         }
 
+        // get the user by id
         User user = userRepo.findById(dto.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         log.debug("Found user {}", user.getId());
@@ -55,6 +57,7 @@ public class LeaveServiceImpl implements LeaveService {
         LeaveBalance balance = leaveBalanceRepo.findByUser(user)
                 .orElseThrow(() -> new ResourceNotFoundException("Leave balance not found"));
 
+        // check if the user has enough leave balance to cover number of days requested
         int daysRequested = (int) ChronoUnit.DAYS.between(start, end) + 1;
         if (daysRequested > balance.getLeavesRemaining()) {
             log.warn("User {} requested {} days, but only {} remain",
@@ -84,13 +87,16 @@ public class LeaveServiceImpl implements LeaveService {
     public LeaveResponseDTO approveLeave(Long leaveId, Long approverId, boolean isAdmin) {
         log.info("Approving leaveId={} by approverId={} (isAdmin={})", leaveId, approverId, isAdmin);
 
+        // get leave from db by id
         LeaveApplication leave = getLeaveOrThrow(leaveId);
+
+        // only pending leaves can be approved
         if (leave.getStatus() != LeaveStatus.PENDING) {
             log.warn("Attempt to approve non-pending leaveId={} with status={}", leaveId, leave.getStatus());
             throw new IllegalStateException("Only PENDING leaves can be approved");
         }
         if (!isAdmin) {
-            // Manager approval check
+            // only employee's manager can approve their leave
             Long employeeManagerId = leave.getUser().getManager().getId(); // employee’s manager
             if (!employeeManagerId.equals(approverId)) {
                 log.warn("Unauthorized approval attempt by approverId={} for leaveId={}", approverId, leaveId);
@@ -132,6 +138,7 @@ public class LeaveServiceImpl implements LeaveService {
         return LeaveMapper.toResponseDto(leaveRepo.save(leave));
     }
 
+    // get all leaves requested by an employee
     public List<LeaveResponseDTO> getLeavesByEmployee(Long userId) {
         log.info("Fetching leaves for userId={}", userId);
         User user = userRepo.findById(userId)
@@ -141,6 +148,7 @@ public class LeaveServiceImpl implements LeaveService {
                 .collect(Collectors.toList());
     }
 
+    // get all pending leaves
     public List<LeaveResponseDTO> getPendingLeaves() {
         log.info("Fetching all pending leaves");
         return leaveRepo.findByStatus(LeaveStatus.PENDING).stream()

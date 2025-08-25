@@ -27,27 +27,17 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserServiceImpl userService;
-    // private PasswordEncoder passwordEncoder;
-
-    // public UserController(UserServiceImpl userService) {
-    // this.userService = userService;
-    // // this.passwordEncoder = passwordEncoder;
-    // }
 
     // Only ADMIN can create new users
     @PreAuthorize("hasRole('ADMIN')") // uncomment later after proper security
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserCreateDTO dto) {
-        // dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         return ResponseEntity.ok(userService.createUser(dto));
     }
 
     // ADMIN and MANAGER can list all users
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')") // here tooo
     @GetMapping
-    // public List<UserDTO> getAllUsers() {
-    // return userService.getAllUsers();
-    // }
     public Page<UserDTO> getAllUsers(
             @PageableDefault(page = 0, size = 10) Pageable pageable) {
         return userService.getAllUsers(pageable);

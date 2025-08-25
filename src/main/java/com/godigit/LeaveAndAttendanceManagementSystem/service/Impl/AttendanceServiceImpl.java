@@ -31,6 +31,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     public Attendance punchIn(Long userId) {
         log.info("Punch in attempt for userId={}", userId);
 
+        // get user from db using id
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.error("Punch in failed - User not found: {}", userId);
@@ -44,6 +45,7 @@ public class AttendanceServiceImpl implements AttendanceService {
                     throw new IllegalStateException("Already punched in. Punch out first.");
                 });
 
+        // build the attendance object
         Attendance attendance = Attendance.builder()
                 .user(user)
                 .punchInTime(LocalDateTime.now())
@@ -62,6 +64,7 @@ public class AttendanceServiceImpl implements AttendanceService {
                     return new ResourceNotFoundException("User not found");
                 });
 
+        // get user with id and check if already punched in. if not, throw error
         Attendance attendance = attendanceRepository.findByUserAndPunchOutTimeIsNull(user)
                 .orElseThrow(() -> {
                     log.warn("Punch out failed - No active punch-in found for user {}", userId);
@@ -74,6 +77,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendanceRepository.save(attendance);
     }
 
+    // method to get attendance records of a user by id
     public List<Attendance> getMyAttendance(Long userId) {
         log.debug("Fetching attendance records for userId={}", userId);
 
@@ -88,6 +92,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendanceRepository.findByUser(user);
     }
 
+    // get attendance status of a user: punched in or not
     public AttendanceStatusDTO getAttendanceStatus(Long userId) {
         log.debug("Checking attendance status for userId={}", userId);
 

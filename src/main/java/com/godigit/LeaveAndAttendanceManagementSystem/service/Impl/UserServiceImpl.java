@@ -47,7 +47,6 @@ public class UserServiceImpl implements UserService {
         user.setFullName(dto.getFullName());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        // user.setPassword(dto.getPassword());
         user.setRole(dto.getRole());
         user.setManager(manager);
 
@@ -66,13 +65,6 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toDto(saved);
     }
 
-    // public List<UserDTO> getAllUsers() {
-    // log.info("Fetching all users");
-
-    // return userRepository.findAll().stream()
-    // .map(UserMapper::toDto)
-    // .toList();
-    // }
     public Page<UserDTO> getAllUsers(Pageable pageable) {
         log.info("Fetching users with pagination: {}", pageable);
 
