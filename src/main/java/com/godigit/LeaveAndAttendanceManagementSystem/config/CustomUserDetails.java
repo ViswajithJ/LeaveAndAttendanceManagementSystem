@@ -2,7 +2,6 @@ package com.godigit.LeaveAndAttendanceManagementSystem.config;
 
 import java.util.Collection;
 
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,11 +16,11 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
-    // 🔹 Expose your User entity when needed
+    // Expose User entity
     public User getUser() {
         return user;
     }
-    
+
     public Long getId() {
         return user.getId(); // expose user ID
     }
@@ -65,5 +64,4 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    
 }

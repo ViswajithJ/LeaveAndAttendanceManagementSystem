@@ -34,7 +34,6 @@ public class FirstAdminCreator implements CommandLineRunner {
             admin.setFullName("Default Admin");
             admin.setEmail(adminEmail);
             admin.setPassword(passwordEncoder.encode(adminPassword));
-            // admin.setPassword("admin123");
             admin.setRole(Role.ADMIN);
 
             userRepository.save(admin);
@@ -46,7 +45,6 @@ public class FirstAdminCreator implements CommandLineRunner {
             balance.setLeavesTaken(0);
 
             leaveBalanceRepository.save(balance);
-            System.out.println("Default admin created -> email: admin@example.com, password: admin123");
         }
     }
 }

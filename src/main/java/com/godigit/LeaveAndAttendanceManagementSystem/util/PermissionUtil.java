@@ -15,9 +15,7 @@ public class PermissionUtil {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Check if a user is part of a manager's team.
-     */
+    // Check if a user is part of a manager's team.
     public boolean isTeamMember(Long managerId, Long userId) {
         return userRepository.findById(userId)
                 .map(user -> user.getManager() != null &&
@@ -25,9 +23,8 @@ public class PermissionUtil {
                 .orElse(false);
     }
 
-    /**
-     * Generalized access check for viewing another user’s data.
-     */
+    // Generalized access check for viewing another user’s data.
+
     public void checkViewPermission(Long loggedInUserId, Role role, Long targetUserId) {
         if (role.equals(Role.EMPLOYEE)) {
             if (!loggedInUserId.equals(targetUserId)) {

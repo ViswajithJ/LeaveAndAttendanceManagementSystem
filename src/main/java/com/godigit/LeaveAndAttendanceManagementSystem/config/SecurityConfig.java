@@ -18,14 +18,14 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableMethodSecurity // Enables @PreAuthorize, @RolesAllowed etc
+@EnableMethodSecurity
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
-    private final PasswordConfig  passwordConfig;
+    private final PasswordConfig passwordConfig;
 
-    // --- DaoAuthenticationProvider bean ---
+    // DaoAuthenticationProvider bean
     @Bean
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -34,46 +34,40 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    // --- AuthenticationManager bean (fixed) ---
+    // AuthenticationManager bean
     @Bean
     public AuthenticationManager authenticationManager(DaoAuthenticationProvider authProvider) {
         return new ProviderManager(authProvider);
     }
 
-    // --- Security filter chain ---
-    
+    // Security filter chain
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**",  "/h2-console/**").permitAll() // signup/login are public
-                .anyRequest().authenticated()
-            )
-            .headers(headers -> headers
-                    .frameOptions(frame -> frame.disable())
-            )
-            // .sessionManagement(session -> session
-            //     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-            // );
-            .formLogin(form -> form
-            .loginProcessingUrl("/api/auth/login") // POST request goes here
-            .usernameParameter("email")     //  tells Spring to look for "email"
-            .passwordParameter("password")
-            .successHandler((request, response, authentication) -> {
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.setContentType("application/json");
-                response.getWriter().write("{\"message\":\"Login successful\"}");
-            })
-            .failureHandler((request, response, exception) -> {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json");
-                response.getWriter().write("{\"error\":\"Invalid username or password\"}");
-            })
-            .permitAll()
-        )
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**", "/h2-console/**").permitAll() // signup/login are public
+                        .anyRequest().authenticated())
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.disable()))
+                .formLogin(form -> form
+                        .loginProcessingUrl("/api/auth/login")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .successHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"message\":\"Login successful\"}");
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\":\"Invalid username or password\"}");
+                        })
+                        .permitAll())
 
-            .logout(logout -> logout.permitAll());
+                .logout(logout -> logout.permitAll());
         return http.build();
     }
 }
